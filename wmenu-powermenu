@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# This script is a simple powermenu for wmenu
+# for sway and i3 but easily extendible to other wm and de
+
+# Set lock command and logout command base on desktop
+
+case "$XDG_CURRENT_DESKTOP" in
+    i3) 
+      lock_cmd="i3lock"
+      logout_cmd="i3-msg exit" ;;
+    sway) 
+      lock_cmd="swaylock"
+      logout_cmd="swaymsg exit" ;;
+    *) 
+      lock_cmd="loginctl lock-session $XDG_SESSION_ID" 
+      logout_cmd="loginctl terminate-session $XDG_SESSION_ID"
+esac
+
+choice=$(printf "Lock\nLogout\nSuspend\nReboot\nShutdown" | wmenu "$@" -p 'Power Menu')
+
+case "$choice" in
+    Lock) $lock_cmd ;;
+    Logout) $logout_cmd ;;
+    Suspend) systemctl suspend ;;
+    Reboot) systemctl reboot ;;
+    Shutdown) systemctl poweroff ;;
+esac
