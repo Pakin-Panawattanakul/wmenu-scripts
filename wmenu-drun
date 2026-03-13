@@ -1,6 +1,7 @@
 #!/bin/sh
 # wmenu-drun - Simple wmenu application launcher written in POSIX sh
 
+term=${TERM:-foot}
 get_apps() {
   # set XDG_DATA_HOME and XDG_DATA_DIRS if they are not set
   XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -66,7 +67,7 @@ cmd=$(printf '%s\n' "$entries" | awk -F'\t' -v name="$choice" '$1==name {print $
 terminal=$(printf '%s\n' "$entries" | awk -F'\t' -v name="$choice" '$1==name {print $3; exit}')
 
 if [ "$terminal" = "true" ]; then
-    cmd="foot -e $cmd"
+    cmd="$term -e $cmd"
 fi
 
 nohup sh -c "$cmd" > /dev/null 2>&1 &
