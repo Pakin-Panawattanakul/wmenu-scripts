@@ -13,6 +13,7 @@ Simple wmenu application launcher, powermenu, and screenshot scripts written in 
 - wmenu
 - grim, slurp, wl-copy (screenshot)
 - swaylock or i3lock (power menu) 
+- foot(default terminal emulator in the scripts)
 
 ## TODO
 - Handle TryExec
