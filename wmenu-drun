@@ -1,7 +1,8 @@
 #!/bin/sh
 # wmenu-drun - Simple wmenu application launcher written in POSIX sh
 
-term=${TERM:-foot}
+set -x
+term=foot
 get_apps() {
   # set XDG_DATA_HOME and XDG_DATA_DIRS if they are not set
   XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
