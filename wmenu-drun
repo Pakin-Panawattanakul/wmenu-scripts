@@ -26,8 +26,11 @@ get_apps() {
     IFS=$OLD_IFS
 }
 
-# using gwak, since we need to detect the ENDFILE for pasing each entry
-entries=$(get_apps | xargs -d '\n' gawk '
+# detect the ENDFILE for pasing each entry
+# name, type, exec, hidden, nodisplay and terminal by selecing everything after first '='
+# clean exec field removing %f %F %u %U %c %k
+# print name, exec, terminal separeated by tab
+entries=$(get_apps | xargs -d '\n' awk '
     FNR==1 {s=0; name=""; type=""; exec=""; hidden=""; nodisplay=""; terminal=""}
     /^\[/{s=0}
     /^\[Desktop Entry\]/{s=1}
@@ -53,10 +56,12 @@ entries=$(get_apps | xargs -d '\n' gawk '
     }
 ')
 
+#print only name to wmenu & also sort by alphabetical order
 choice=$(printf '%s\n' "$entries" | cut  -f 1 | sort | wmenu "$@" )
 
 [ -z "$choice" ] && exit 0
 
+# pasing cmd base on returned name, exec, terminal
 cmd=$(printf '%s\n' "$entries" | awk -F'\t' -v name="$choice" '$1==name {print $2; exit}')
 terminal=$(printf '%s\n' "$entries" | awk -F'\t' -v name="$choice" '$1==name {print $3; exit}')
 
