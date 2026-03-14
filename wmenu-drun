@@ -1,66 +1,59 @@
 #!/bin/sh
 # wmenu-drun - Simple wmenu application launcher written in POSIX sh
 
-set -x
 term=foot
 get_apps() {
-  # set XDG_DATA_HOME and XDG_DATA_DIRS if they are not set
-  XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-  XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/share:/usr/local/share}"
+    # set directory that we search for .desktop file
+    XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+    XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/share:/usr/local/share}"
 
-  OLD_IFS=$IFS
-  IFS=:
-  dirs="$XDG_DATA_HOME:$XDG_DATA_DIRS"
+    OLD_IFS=$IFS
+    IFS=:
+    dirs="$XDG_DATA_HOME:$XDG_DATA_DIRS"
 
-  for dir in $dirs
-  do
-    app_dir="$dir/applications"
-    ! [ -d "$app_dir" ] && continue
-    
-    find "$app_dir" -name "*.desktop" | while IFS= read -r app
-    do
-      app_id="${app#"$app_dir/"}"
-      app_id="$(printf "%s" "$app_id" | tr "/" "-")"
-      printf "%s\t%s\n" "$app_id" "$app"
-    done 
-  done | awk -F '\t' '!seen[$1]++ {print $2}'
-
-  IFS=$OLD_IFS
+    # find .desktop in XDG_DATA_HOME and XDG_DATA_DIRS
+    # print app_dir and full path separated by \t for parsing app_id
+    # increment awk array[app_id] for avoiding duplicate app_id
+    for dir in $dirs; do
+        app_dir="$dir/applications"
+        [ -d "$app_dir" ] && find "$app_dir" -name "*.desktop" | sed "s|^|$app_dir\t|"
+    done | awk -F'\t' '{
+        app_dir=$1; path=$2
+        app_id=substr(path, length(app_dir)+2)
+        gsub(/\//, "-", app_id)
+        if (!seen[app_id]++) print path
+    }'
+    IFS=$OLD_IFS
 }
 
-parse_entry(){
-  file=$1
-  type="" exec="" name="" nodisplay="" hidden="" terminal="false"
-eval "$(awk '
+# using gwak, since we need to detect the ENDFILE for pasing each entry
+entries=$(get_apps | xargs -d '\n' gawk '
+    FNR==1 {s=0; name=""; type=""; exec=""; hidden=""; nodisplay=""; terminal=""}
     /^\[/{s=0}
     /^\[Desktop Entry\]/{s=1}
     s {
         i = index($0, "=")
         key = substr($0, 1, i-1)
         val = substr($0, i+1)
+        gsub(/^[ \t]+|[ \t]+$/, "", key)
+        gsub(/^[ \t]+|[ \t]+$/, "", val)
+        if (key=="Name")      name=val
+        if (key=="Type")      type=val
+        if (key=="Exec")      exec=val
+        if (key=="Hidden")    hidden=val
+        if (key=="NoDisplay") nodisplay=val
+        if (key=="Terminal")  terminal=val
     }
-    s && key=="Name"      {name=val}
-    s && key=="Type"      {type=val}
-    s && key=="Exec"      {exec=val}
-    s && key=="Hidden"    {hidden=val}
-    s && key=="NoDisplay" {nodisplay=val}
-    s && key=="Terminal"  {terminal=val}
-    END {printf "name=\"%s\" type=\"%s\" exec=\"%s\" hidden=\"%s\" nodisplay=\"%s\" terminal=\"%s\"\n", name, type, exec, hidden, nodisplay, terminal}
-' "$file")"
+    ENDFILE {
+        if (type=="Application" && exec!="" && nodisplay!="true" && hidden!="true") {
+            gsub(/%[fFuUck]/, "", exec)
+            gsub(/%i/, "", exec)
+            printf "%s\t%s\t%s\n", name, exec, terminal
+        }
+    }
+')
 
-exec=$(printf '%s' "$exec" | sed 's/%[fFuUck]//g; s/%i//g') #clean the temp flag
-  [ "$type" = "Application" ] || return 1
-  [ -n "$exec" ] || return 1
-  [ "$nodisplay" = "true" ] && return 1
-  [ "$hidden" = "true" ] && return 1
-  printf "%s\t%s\t%s\n" "$name" "$exec" "$terminal"
-}
-
-entries=$(get_apps | while IFS= read -r app; do
-    parse_entry "$app"
-done)
-
-choice=$(printf '%s\n' "$entries" | awk -F'\t' '{print $1}' | sort | wmenu "$@" )
+choice=$(printf '%s\n' "$entries" | cut  -f 1 | sort | wmenu "$@" )
 
 [ -z "$choice" ] && exit 0
 
