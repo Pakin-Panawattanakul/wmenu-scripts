@@ -1,6 +1,6 @@
 #!/bin/sh
 # wmenu-drun - Simple wmenu application launcher written in POSIX sh
-
+set -x
 term=foot
 get_apps() {
     # set directory that we search for .desktop file
@@ -13,11 +13,11 @@ get_apps() {
 
     # find .desktop in XDG_DATA_HOME and XDG_DATA_DIRS
     # print app_dir and full path separated by \t for parsing app_id
-    # increment awk array[app_id] for avoiding duplicate app_id
+    # increment gawk array[app_id] for avoiding duplicate app_id
     for dir in $dirs; do
         app_dir="$dir/applications"
         [ -d "$app_dir" ] && find "$app_dir" -name "*.desktop" | sed "s|^|$app_dir\t|"
-    done | awk -F'\t' '{
+    done | gawk -F'\t' '{
         app_dir=$1; path=$2
         app_id=substr(path, length(app_dir)+2)
         gsub(/\//, "-", app_id)
@@ -30,7 +30,7 @@ get_apps() {
 # name, type, exec, hidden, nodisplay and terminal by selecing everything after first '='
 # clean exec field removing %f %F %u %U %c %k
 # print name, exec, terminal separeated by tab
-entries=$(get_apps | xargs -d '\n' awk '
+entries=$(get_apps | xargs -d '\n' gawk '
     FNR==1 {s=0; name=""; type=""; exec=""; hidden=""; nodisplay=""; terminal=""}
     /^\[/{s=0}
     /^\[Desktop Entry\]/{s=1}
@@ -62,8 +62,8 @@ choice=$(printf '%s\n' "$entries" | cut  -f 1 | sort | wmenu "$@" )
 [ -z "$choice" ] && exit 0
 
 # pasing cmd base on returned name, exec, terminal
-cmd=$(printf '%s\n' "$entries" | awk -F'\t' -v name="$choice" '$1==name {print $2; exit}')
-terminal=$(printf '%s\n' "$entries" | awk -F'\t' -v name="$choice" '$1==name {print $3; exit}')
+cmd=$(printf '%s\n' "$entries" | gawk -F'\t' -v name="$choice" '$1==name {print $2; exit}')
+terminal=$(printf '%s\n' "$entries" | gawk -F'\t' -v name="$choice" '$1==name {print $3; exit}')
 
 if [ "$terminal" = "true" ]; then
     cmd="$term -e $cmd"

@@ -3,15 +3,19 @@
 # This script is a simple powermenu for wmenu
 # for sway and i3 but easily extendible to other wm and de
 
+set -x
 # Set lock command and logout command base on desktop
-
+wallpaper="$HOME/Pictures/wallpapers/cosmic/orion_nebula_nasa_heic0601a.jpg"
 case "$XDG_CURRENT_DESKTOP" in
     i3) 
       lock_cmd="i3lock"
       logout_cmd="i3-msg exit" ;;
     sway) 
-      lock_cmd="swaylock"
+      lock_cmd="swaylock -f -i $wallpaper"
       logout_cmd="swaymsg exit" ;;
+    wlroots)
+      lock_cmd="swaylock -f -i $wallpaper"
+      logout_cmd="loginctl terminate-session $XDG_SESSION_ID" ;;
     *) 
       lock_cmd="loginctl lock-session $XDG_SESSION_ID" 
       logout_cmd="loginctl terminate-session $XDG_SESSION_ID"

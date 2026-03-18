@@ -29,7 +29,7 @@ case $use_slurp in
             filename="$(date +%Y-%m-%d_%H-%M-%S).png"
         fi
         if [ -n "$filename" ]; then
-          grim -g "$slurp" "$HOME/Pictures/screenshots/$filename" 
+          grim -g "$slurp" "$HOME/Pictures/screenshots/$filename.png" 
         fi ;;
       *) exit 1 ;;
     esac ;;
@@ -43,7 +43,7 @@ case $use_slurp in
             filename="$(date +%Y-%m-%d_%H-%M-%S).png"
         fi
         if [ -n "$filename" ]; then
-          grim  "$HOME/Pictures/screenshots/$filename"
+          grim  "$HOME/Pictures/screenshots/$filename.png"
         fi ;;
       *) exit 1 ;;
     esac ;;
