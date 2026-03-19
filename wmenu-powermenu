@@ -3,7 +3,6 @@
 # This script is a simple powermenu for wmenu
 # for sway and i3 but easily extendible to other wm and de
 
-set -x
 # Set lock command and logout command base on desktop
 wallpaper="$HOME/Pictures/wallpapers/cosmic/orion_nebula_nasa_heic0601a.jpg"
 case "$XDG_CURRENT_DESKTOP" in

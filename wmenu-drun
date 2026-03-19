@@ -1,6 +1,6 @@
 #!/bin/sh
 # wmenu-drun - Simple wmenu application launcher written in POSIX sh
-set -x
+
 term=foot
 get_apps() {
     # set directory that we search for .desktop file
