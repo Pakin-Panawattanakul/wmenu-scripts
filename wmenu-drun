@@ -6,10 +6,13 @@ get_apps() {
     # set directory that we search for .desktop file
     XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
     XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/share:/usr/local/share}"
+    # add directory for flatpak desktop entry
+    # this is location for debian 13
+    FLATPAK_DIRS="/var/lib/flatpak/exports/share/"
 
     OLD_IFS=$IFS
     IFS=:
-    dirs="$XDG_DATA_HOME:$XDG_DATA_DIRS"
+    dirs="$XDG_DATA_HOME:$XDG_DATA_DIRS:$FLATPAK_DIRS"
 
     # find .desktop in XDG_DATA_HOME and XDG_DATA_DIRS
     # print app_dir and full path separated by \t for parsing app_id
