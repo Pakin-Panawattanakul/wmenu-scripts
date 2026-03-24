@@ -2,39 +2,24 @@
 
 # simple screenshot script using grim and slurp
 
-mkdir -p "$HOME/Pictures/screenshots/"
-
-choice=$(printf "Select Area\nFull Screen" | wmenu "$@" -p 'Screenshot Mode')
-[ -z "$choice" ] && exit 1  
-
-case $choice in
-  "Select Area") 
-    use_slurp=true 
-    slurp=$(slurp) 
-    [ -z "$slurp" ] && exit 1
-    ;;
-  "Full Screen") use_slurp=false ;;
-  *) exit 1;
-esac
+set -x 
+region=$(slurp)
 
 choice=$(printf "Clipboard\nFile" |  wmenu "$@" -p 'Save to')
-
-case $use_slurp in
-  "true") 
+if [ ! -z "$region" ]; then
     case $choice in
-      "Clipboard") grim -g "$slurp" - | wl-copy ;;
+      "Clipboard") grim -g "$region" - | wl-copy ;;
       "File") 
         filename=$(printf '' | wmenu "$@" -p "Enter file name") 
         if [ -z "$filename" ]; then
             filename="$(date +%Y-%m-%d_%H-%M-%S).png"
         fi
         if [ -n "$filename" ]; then
-          grim -g "$slurp" "$HOME/Pictures/screenshots/$filename.png" 
+          grim -g "$region" "$HOME/Pictures/screenshots/$filename.png" 
         fi ;;
       *) exit 1 ;;
-    esac ;;
-
-  "false")
+    esac
+else
     case $choice in
       "Clipboard") grim - | wl-copy ;;
       "File") 
@@ -46,5 +31,5 @@ case $use_slurp in
           grim  "$HOME/Pictures/screenshots/$filename.png"
         fi ;;
       *) exit 1 ;;
-    esac ;;
-esac
+    esac
+fi
