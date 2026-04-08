@@ -10,12 +10,12 @@ case "$XDG_CURRENT_DESKTOP" in
       lock_cmd="i3lock"
       logout_cmd="i3-msg exit" ;;
     sway) 
-      #lock_cmd="swaylock -f -i $wallpaper"
-      lock_cmd="swaylock -f"
+      #lock_cmd="swaylock -i $wallpaper"
+      lock_cmd="swaylock"
       logout_cmd="swaymsg exit" ;;
     wlroots)
-      #lock_cmd="swaylock -f -i $wallpaper"
-      lock_cmd="swaylock -f"
+      #lock_cmd="swaylock -i $wallpaper"
+      lock_cmd="swaylock" 
       logout_cmd="loginctl terminate-session $XDG_SESSION_ID" ;;
     *) 
       lock_cmd="loginctl lock-session $XDG_SESSION_ID" 
