@@ -6,13 +6,13 @@ Simple wmenu application launcher, powermenu, and screenshot scripts written in 
 
 ## Scripts
 - wmenu-drun - application launcher
-- wmenu-power - power menu (mainly for i3 and sway)
+- wmenu-power - power menu (modify command as needed)
 - wmenu-screenshot - screenshot tool
 
 ## Dependencies
 - wmenu
 - grim, slurp, wl-copy (screenshot)
-- swaylock or i3lock (power menu) 
+- waylock
 - foot(default terminal emulator in the scripts)
 
 ## TODO
