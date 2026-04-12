@@ -4,32 +4,16 @@
 
 set -x 
 region=$(slurp)
+mkdir -p "$HOME/Pictures/screenshots"
 
 choice=$(printf "Clipboard\nFile" |  wmenu "$@" -p 'Save to')
 if [ ! -z "$region" ]; then
     case $choice in
-      "Clipboard") grim -g "$region" - | wl-copy ;;
+      "Clipboard") grim -g "$region" - | wl-copy --type image/png;;
       "File") 
-        filename=$(printf '' | wmenu "$@" -p "Enter file name") 
-        if [ -z "$filename" ]; then
-            filename="$(date +%Y-%m-%d_%H-%M-%S).png"
-        fi
-        if [ -n "$filename" ]; then
-          grim -g "$region" "$HOME/Pictures/screenshots/$filename.png" 
-        fi ;;
-      *) exit 1 ;;
-    esac
-else
-    case $choice in
-      "Clipboard") grim - | wl-copy ;;
-      "File") 
-        filename=$(printf '' | wmenu "$@" -p "Enter file name") 
-        if [ -z "$filename" ]; then
-            filename="$(date +%Y-%m-%d_%H-%M-%S).png"
-        fi
-        if [ -n "$filename" ]; then
-          grim  "$HOME/Pictures/screenshots/$filename.png"
-        fi ;;
+          filename="$(date +%Y-%m-%d_%H-%M-%S).png"
+          grim -g "$region" "$HOME/Pictures/screenshots/$filename" 
+        ;;
       *) exit 1 ;;
     esac
 fi
