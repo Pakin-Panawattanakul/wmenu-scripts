@@ -25,7 +25,15 @@ get_apps() {
         app_dir=$1; path=$2
         app_id=substr(path, length(app_dir)+2)
         gsub(/\//, "-", app_id)
-        if (!seen[app_id]++) print path
+        if (seen[app_id]++)  next
+
+        # peek into the file for NoDisplay/Hidden
+        skip=0
+        while ((getline line < path) > 0) {
+            if (line ~ /^NoDisplay=true/ || line ~ /^Hidden=true/) { skip=1; break }
+        }
+        close(path)
+        if (!skip) print path
     }'
     IFS=$OLD_IFS
 }
