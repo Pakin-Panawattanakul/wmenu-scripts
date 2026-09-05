@@ -2,11 +2,12 @@
 
 # simple screenshot script using grim and slurp
 
-set -x 
+menu="${MENU_LAUNCHER:-wmenu}"
+
 region=$(slurp)
 mkdir -p "$HOME/Pictures/screenshots"
 
-choice=$(printf "Clipboard\nFile" |  wmenu "$@" -p 'Save to')
+choice=$(printf "Clipboard\nFile" |  $menu "$@" -p 'Save to')
 if [ ! -z "$region" ]; then
     case $choice in
       "Clipboard") grim -g "$region" - | wl-copy --type image/png;;

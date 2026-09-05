@@ -1,7 +1,8 @@
 #!/bin/sh
 # wmenu-drun - Simple wmenu application launcher written in POSIX sh
 
-term=foot
+term=${TERM:-foot}
+menu="${MENU_LAUNCHER:-wmenu}"
 get_apps() {
     # set directory that we search for .desktop file
     XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -69,7 +70,7 @@ entries=$(get_apps | xargs -d '\n' gawk '
 ')
 
 #print only name to wmenu & also sort by alphabetical order
-choice=$(printf '%s\n' "$entries" | cut  -f 1 | sort | wmenu "$@" )
+choice=$(printf '%s\n' "$entries" | cut  -f 1 | sort | $menu "$@" )
 
 [ -z "$choice" ] && exit 0
 

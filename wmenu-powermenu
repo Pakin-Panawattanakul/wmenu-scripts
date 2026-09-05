@@ -7,13 +7,14 @@
 # wallpaper="/path/to/wallpaper/"
 # lock_cmd="systemctl lock-session $XDG_SESSION_ID" 
 #
+menu="${MENU_LAUNCHER:-wmenu}"
 poweroff_cmd="systemctl poweroff"
 reboot_cmd="systemctl reboot"
 suspend_cmd="systemctl suspend"
 lock_cmd="waylock -ignore-empty-password -init-color 0x2c2e33 -input-color 0x005523 -fail-color 0x590008"
 logout_cmd="loginctl terminate-session $XDG_SESSION_ID"
 
-choice=$(printf "󰐥  Shutdown\n󰜉  Reboot\n󰒲  Suspend\n󰍃  Logout\n󰌾  Lock" | wmenu "$@")
+choice=$(printf " 󰐥  Shutdown\n 󰜉  Reboot\n 󰒲  Suspend\n 󰍃  Logout\n 󰌾  Lock" | $menu "$@")
 
 case "$choice" in
     *Lock) $lock_cmd ;;
