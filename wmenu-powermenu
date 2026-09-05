@@ -5,16 +5,20 @@
 
 # Set lock command and logout command base on desktop
 # wallpaper="/path/to/wallpaper/"
-# lock_cmd="loginctl lock-session $XDG_SESSION_ID" 
+# lock_cmd="systemctl lock-session $XDG_SESSION_ID" 
+#
+poweroff_cmd="systemctl poweroff"
+reboot_cmd="systemctl reboot"
+suspend_cmd="systemctl suspend"
 lock_cmd="waylock -ignore-empty-password -init-color 0x2c2e33 -input-color 0x005523 -fail-color 0x590008"
 logout_cmd="loginctl terminate-session $XDG_SESSION_ID"
 
-choice=$(printf "Shutdown\nReboot\nSuspend\nLogout\nLock" | wmenu "$@" -p 'Power Menu')
+choice=$(printf "󰐥  Shutdown\n󰜉  Reboot\n󰒲  Suspend\n󰍃  Logout\n󰌾  Lock" | wmenu "$@" -p 'Power Menu')
 
 case "$choice" in
-    Lock) $lock_cmd ;;
-    Logout) $logout_cmd ;;
-    Suspend) loginctl suspend ;;
-    Reboot) loginctl reboot ;;
-    Shutdown) loginctl poweroff ;;
+    *Lock) $lock_cmd ;;
+    *Logout) $logout_cmd ;;
+    *Suspend) $suspend_cmd ;;
+    *Reboot) $reboot_cmd ;;
+    *Shutdown) $poweroff_cmd ;;
 esac
