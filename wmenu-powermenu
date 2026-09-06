@@ -7,11 +7,14 @@
 # wallpaper="/path/to/wallpaper/"
 # lock_cmd="systemctl lock-session $XDG_SESSION_ID" 
 #
+lock_init_color="${LOCK_INIT_COLOR:-0x2c2e33}"
+lock_input_color="${LOCK_INPUT_COLOR:-0x005523}"
+lock_fail_color="${LOCK_FAIL_COLOR:-0x590008}"
 menu="${MENU_LAUNCHER:-wmenu}"
 poweroff_cmd="systemctl poweroff"
 reboot_cmd="systemctl reboot"
 suspend_cmd="systemctl suspend"
-lock_cmd="waylock -ignore-empty-password -init-color 0x2c2e33 -input-color 0x005523 -fail-color 0x590008"
+lock_cmd="waylock -ignore-empty-password -init-color $lock_init_color -input-color $lock_input_color -fail-color $lock_fail_color"
 logout_cmd="loginctl terminate-session $XDG_SESSION_ID"
 
 choice=$(printf " 󰐥  Shutdown\n 󰜉  Reboot\n 󰒲  Suspend\n 󰍃  Logout\n 󰌾  Lock" | $menu "$@")
