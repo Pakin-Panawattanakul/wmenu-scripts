@@ -15,7 +15,7 @@ poweroff_cmd="systemctl poweroff"
 reboot_cmd="systemctl reboot"
 suspend_cmd="systemctl suspend"
 lock_cmd="waylock -ignore-empty-password -init-color $lock_init_color -input-color $lock_input_color -fail-color $lock_fail_color"
-logout_cmd="loginctl terminate-session $XDG_SESSION_ID"
+logout_cmd="loginctl kill-session $XDG_SESSION_ID"
 
 choice=$(printf " 󰐥  Shutdown\n 󰜉  Reboot\n 󰒲  Suspend\n 󰍃  Logout\n 󰌾  Lock" | $menu "$@")
 
