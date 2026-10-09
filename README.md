@@ -12,7 +12,7 @@ Simple wmenu application launcher, powermenu, and screenshot scripts written in 
 ## Dependencies
 - wmenu
 - grim, slurp, wl-copy (screenshot)
-- waylock
+- waylock (or any Wayland locker; override the command with `LOCK_CMD`)
 - foot(default terminal emulator in the scripts)
 
 ## TODO
