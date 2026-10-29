@@ -1,0 +1,7 @@
+#!/bin/sh
+
+menu="${MENU_LAUNCHER:-wmenu}"
+mode=$(printf "Power-saver\nBalanced\nPerformance\n" | $menu "$@")
+mode_lower=$(printf $mode | tr '[:upper:]' '[:lower:]')
+tlpctl "$mode_lower"
+notify-send "TLP: $mode mode"
