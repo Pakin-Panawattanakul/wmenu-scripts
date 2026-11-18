@@ -1,7 +1,13 @@
 #!/bin/sh
 
 menu="${MENU_LAUNCHER:-wmenu}"
-mode=$(printf "Power-saver\nBalanced\nPerformance\n" | $menu "$@")
-mode_lower=$(printf $mode | tr '[:upper:]' '[:lower:]')
-tlpctl "$mode_lower"
-notify-send "TLP: $mode mode"
+current_mode=$(tlpctl | grep '*' | cut -d ' ' -f 2)
+modes=$(printf '%s\n' 'Power-saver' 'Balanced' 'Performance' |
+  awk -v current="$current_mode" 'tolower($0) == tolower(current) { $0 = $0 " *" } { print }')
+mode=$(printf '%s\n' "$modes" | $menu "$@")
+mode=${mode%\*}
+if [ -n "$mode" ]; then
+  mode_lower=$(printf '%s' "$mode" | tr '[:upper:]' '[:lower:]')
+  tlpctl "$mode_lower"
+  notify-send "TLP: $mode mode"
+fi
